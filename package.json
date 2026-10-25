@@ -1,0 +1,51 @@
+{
+  "name": "lasso",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source reporting for AI tooling usage, cost, limits, and behaviour across Cursor and Claude.",
+  "license": "Apache-2.0",
+  "repository": "github:dovetail/lasso",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node .next/standalone/server.js",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "demo:seed": "tsx scripts/seed-demo.ts",
+    "sync": "tsx scripts/sync.ts"
+  },
+  "dependencies": {
+    "@octokit/auth-app": "^8.3.1",
+    "drizzle-orm": "^0.45.4",
+    "jose": "^6.2.13",
+    "next": "^16.4.3",
+    "openid-client": "^6.8.8",
+    "papaparse": "^5.7.0",
+    "pg-boss": "^12.38.0",
+    "postgres": "^3.4.9",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "recharts": "^3.10.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22",
+    "@types/papaparse": "^5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.0",
+    "vitest": "^5.0.5"
+  }
+}

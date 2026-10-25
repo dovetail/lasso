@@ -1,0 +1,39 @@
+name: lasso
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lasso
+      POSTGRES_PASSWORD: lasso
+      POSTGRES_DB: lasso
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lasso -d lasso"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  lasso:
+    build: .
+    image: lasso:local
+    profiles: ["app"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgres://lasso:lasso@postgres:5432/lasso
+      LASSO_AUTH_MODE: ${LASSO_AUTH_MODE:-none}
+      LASSO_SESSION_SECRET: ${LASSO_SESSION_SECRET:-local-dev-session-secret-change-me-please}
+      LASSO_DEMO: ${LASSO_DEMO:-0}
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
