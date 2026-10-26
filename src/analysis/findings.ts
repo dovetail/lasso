@@ -117,6 +117,8 @@ export function toolOverlap(input: FindingsInput): FindingDraft[] {
     const share = Math.max(cDays, aDays) / total;
     if (share < overlapDominantShare) continue;
     const under = dominant === "cursor" ? "claude" : "cursor";
+    // Zero activity on the minor tool is already reported as an idle seat.
+    if ((under === "cursor" ? cDays : aDays) === 0) continue;
     const price = input.settings.seatPriceUsd[under];
     out.push({
       ruleId: "tool_overlap",

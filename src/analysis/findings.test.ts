@@ -70,6 +70,7 @@ describe("toolOverlap", () => {
       people: [{ id: 7, label: "Jane" }, { id: 8, label: "Sam" }],
       activeDays: [
         ...days.map((day) => ({ accountId: 1, day })),
+        { accountId: 2, day: days[0]! },
         ...days.slice(0, 10).map((day) => ({ accountId: 3, day })),
         ...days.slice(0, 10).map((day) => ({ accountId: 4, day })),
       ],
@@ -78,6 +79,16 @@ describe("toolOverlap", () => {
     expect(out).toHaveLength(1);
     expect(out[0]!.subjectKey).toBe("7");
     expect(out[0]!.monthlyImpactUsd).toBe(DEFAULT_SETTINGS.seatPriceUsd.claude);
+  });
+
+  it("leaves completely unused seats to the idle seat rule", () => {
+    const days = eachDay(addDays(asOf, -20), asOf);
+    const input = base({
+      accounts: [account(1, "cursor", 7), account(2, "claude", 7)],
+      people: [{ id: 7, label: "Jane" }],
+      activeDays: days.map((day) => ({ accountId: 1, day })),
+    });
+    expect(toolOverlap(input)).toHaveLength(0);
   });
 });
 

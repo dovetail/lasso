@@ -33,7 +33,7 @@ services:
       LASSO_SESSION_SECRET: ${LASSO_SESSION_SECRET:-local-dev-session-secret-change-me-please}
       LASSO_DEMO: ${LASSO_DEMO:-0}
     ports:
-      - "3000:3000"
+      - "${LASSO_PORT:-3000}:3000"
 
 volumes:
   pgdata:

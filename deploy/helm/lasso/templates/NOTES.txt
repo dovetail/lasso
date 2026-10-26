@@ -1,0 +1,10 @@
+Lasso is starting. It runs database migrations on boot, then syncs connectors on "{{ .Values.env.LASSO_SYNC_CRON }}".
+
+{{- if .Values.ingress.enabled }}
+Open: http{{ if .Values.ingress.tls }}s{{ end }}://{{ (index .Values.ingress.hosts 0).host }}
+{{- else }}
+Port-forward to try it:
+  kubectl port-forward svc/{{ include "lasso.fullname" . }} 3000:{{ .Values.service.port }}
+{{- end }}
+
+Make sure the secret "{{ include "lasso.secretName" . }}" contains DATABASE_URL and LASSO_SESSION_SECRET.

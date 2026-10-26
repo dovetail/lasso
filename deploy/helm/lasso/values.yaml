@@ -1,0 +1,72 @@
+image:
+  repository: ghcr.io/dovetail/lasso
+  tag: ""
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+# Name of an existing Secret holding Lasso's sensitive environment variables, e.g.
+#   DATABASE_URL, LASSO_SESSION_SECRET, OIDC_CLIENT_SECRET, CURSOR_API_KEY,
+#   CLAUDE_ANALYTICS_API_KEY, CLAUDE_ADMIN_API_KEY, GITHUB_TOKEN or GITHUB_APP_PRIVATE_KEY.
+# Create it with kubectl, External Secrets, Sealed Secrets, etc. Recommended.
+existingSecret: ""
+
+# Alternatively, let the chart create a Secret from these values (avoid committing them).
+secretEnv: {}
+
+# Non-sensitive configuration.
+env:
+  LASSO_ROLE: all
+  LASSO_AUTH_MODE: oidc
+  LASSO_BASE_URL: ""
+  LASSO_SYNC_CRON: "15 * * * *"
+  OIDC_ISSUER: ""
+  OIDC_CLIENT_ID: ""
+  OIDC_ALLOWED_DOMAINS: ""
+  GITHUB_ORG: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  # alb.ingress.kubernetes.io/scheme: internal
+  # alb.ingress.kubernetes.io/target-type: ip
+  hosts:
+    - host: lasso.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  # eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/lasso
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 768Mi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop: ["ALL"]
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}

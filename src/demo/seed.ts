@@ -193,7 +193,8 @@ export async function seedDemo(db: DB, asOf: Day = today()) {
       const load = p.intensity * growth * (0.6 + rand() * 0.8);
 
       const useCursor = p.cursor && p.trait !== "idle_cursor" && (p.trait === "overlap" ? true : !p.claude || rand() < p.cursorShare);
-      const useClaude = p.claude && p.trait !== "idle_claude" && p.trait !== "overlap" && (!p.cursor || !useCursor || rand() < 0.4);
+      const useClaude =
+        p.claude && p.trait !== "idle_claude" && (p.trait === "overlap" ? rand() < 0.06 : !p.cursor || !useCursor || rand() < 0.4);
 
       if (useCursor) {
         let reqs = Math.max(1, Math.round(load * 25));
@@ -209,7 +210,8 @@ export async function seedDemo(db: DB, asOf: Day = today()) {
       if (useClaude) {
         const reqs = Math.max(1, Math.round(load * 18));
         const product = p.team === "design" ? "cowork" : rand() < 0.75 ? "claude_code" : pick(["cowork", "chat"] as const);
-        const [m, c, t] = pick(CLAUDE_MODELS);
+        let [m, c, t] = pick(CLAUDE_MODELS);
+        if (p.trait === "opus_small" && /opus/.test(m)) [m, c, t] = CLAUDE_MODELS.find(([name]) => !/opus/.test(name))!;
         batch.usage.push(usageRow("claude", claudeId, product, m, day, reqs, c, t));
         batch.activity.push(activityRow("claude", claudeId, product, day, Math.max(1, Math.round(reqs / 8)), reqs));
       }
